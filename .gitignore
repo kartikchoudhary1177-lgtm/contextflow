@@ -1,0 +1,54 @@
+# Python
+
+**pycache**/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+
+venv/
+env/
+ENV/
+
+# Environment Variables
+.env
+
+# Django
+
+*.log
+db.sqlite3
+media/
+staticfiles/
+
+# Migrations (optional)
+
+**/migrations/*
+!**/migrations/**init**.py
+
+# VS Code
+
+.vscode/
+
+#Windows
+
+Thumbs.db
+
+# Python build files
+
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Testing
+
+.coverage
+htmlcov/
+
+# Pytest cache
+
+.pytest_cache/
+
+# MyPy
+
+.mypy_cache/

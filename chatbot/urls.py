@@ -6,6 +6,6 @@ from chatbot.views import ConversationCreateView,ConversationMessagesView,ChatVi
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('conversation/',ConversationCreateView.as_view()),
-    path('message<id>/',ConversationMessagesView.as_view()),
+    path('conversation/<id>/message/',ConversationMessagesView.as_view()),
     path('chat/',ChatView.as_view(),name = "chat")
 ]

@@ -20,6 +20,16 @@ from django.urls import path,include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("auth/",include('user_auth.urls')),
-    path("api/",include('chatbot.urls'))
+    path("",include('user_auth.urls')),
+    path("",include('chatbot.urls')),
+    path("", admin.site.urls),
+
+    # frontend pages
+    path("", include("chatbot.urls")),
+
+    # auth app
+    path("auth/", include("user_auth.urls")),
+
+    # api urls
+    path("api/", include("chatbot.urls"))
 ]

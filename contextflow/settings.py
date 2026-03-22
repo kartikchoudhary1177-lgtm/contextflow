@@ -37,8 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'rest_framework',
+    'rest_framework_simplejwt',
+
     'user_auth',
-    'chatbot'
+    'chatbot',
 ]
 
 MIDDLEWARE = [
@@ -52,22 +56,24 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'contextflow.urls'
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
-
 WSGI_APPLICATION = 'contextflow.wsgi.application'
 
 
@@ -136,8 +142,15 @@ REST_FRAMEWORK = {
 }
 
 AUTH_USER_MODEL = 'user_auth.User'
+from pathlib import Path
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 from decouple import config
 
 GEMINI_API_KEY = config("GEMINI_API_KEY")
+GROQ_API_KEY = config("GROQ_API_KEY")
+HUGGINGFACE_API_KEY = config("HUGGINGFACE_API_KEY")
 

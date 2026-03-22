@@ -6,6 +6,7 @@ from django.contrib.auth.hashers import check_password
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.db.models import Q
+from rest_framework import status
 
 
 # Create your views here.
@@ -22,7 +23,7 @@ class SignUp(APIView):
              "email": serializer.data["email"]
                 }
             })
-        return Response(serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     
 class SignIn(APIView):
@@ -41,10 +42,10 @@ class SignIn(APIView):
         refresh = RefreshToken.for_user(user)
         
         return Response({
-               "user": {
-               "id": user.id,
-               "username": user.username,
-               },
-              "access_token": str(refresh.access_token),
-              "refresh_token": str(refresh)
-                })
+    "user": {
+        "id": user.id,
+        "username": user.username,
+    },
+    "access": str(refresh.access_token),  
+    "refresh": str(refresh),               
+})

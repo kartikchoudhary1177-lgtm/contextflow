@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ContextFlow AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Inter, Arial, sans-serif;
+        }
+
+        :root {
+            --bg: #030712;
+            --panel: rgba(15, 23, 42, 0.9);
+            --panel-2: rgba(17, 24, 39, 0.9);
+            --soft: rgba(255,255,255,.05);
+            --soft-2: rgba(255,255,255,.08);
+            --text: #e5e7eb;
+            --muted: #94a3b8;
+            --blue: #3b82f6;
+            --purple: #8b5cf6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --border: rgba(255,255,255,.08);
+            --shadow: 0 20px 60px rgba(0,0,0,.35);
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            background:
+                radial-gradient(circle at top left, rgba(59,130,246,.16), transparent 28%),
+                radial-gradient(circle at bottom right, rgba(139,92,246,.16), transparent 28%),
+                var(--bg);
+            color: var(--text);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* AUTH PAGE */
+        .page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            overflow: auto;
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 1180px;
+            min-height: 720px;
+            background: rgba(7, 12, 24, 0.88);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1.1fr .9fr;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(16px);
+        }
+
+        .auth-left {
+            padding: 64px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background:
+                linear-gradient(160deg, rgba(15,23,42,.96), rgba(2,6,23,.94)),
+                radial-gradient(circle at top left, rgba(59,130,246,.22), transparent 34%);
+            position: relative;
+        }
+
+        .auth-left::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(59,130,246,.16), transparent 25%),
+                radial-gradient(circle at 80% 70%, rgba(139,92,246,.14), transparent 30%);
+            pointer-events: none;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 26px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .brand-badge {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--blue), var(--purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 20px;
+            color: white;
+            box-shadow: 0 12px 30px rgba(59,130,246,.3);
+        }
+
+        .brand h3 {
+            font-size: 22px;
+        }
+
+        .brand p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .auth-left h1 {
+            font-size: 54px;
+            line-height: 1.04;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-left > p {
+            color: #cbd5e1;
+            font-size: 16px;
+            line-height: 1.8;
+            max-width: 560px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-list {
+            margin-top: 34px;
+            display: grid;
+            gap: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-item {
+            padding: 18px 18px;
+            background: rgba(255,255,255,.04);
+            border: 1px solid rgba(255,255,255,.07);
+            border-radius: 18px;
+            color: #dbeafe;
+            line-height: 1.5;
+        }
+
+        .auth-right {
+            padding: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background:
+                linear-gradient(180deg, rgba(2,6,23,.88), rgba(15,23,42,.82));
+        }
+
+        .auth-box {
+            width: 100%;
+            max-width: 390px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 28px;
+            background: rgba(255,255,255,.03);
+            padding: 8px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            flex: 1;
+            border: none;
+            cursor: pointer;
+            padding: 13px 16px;
+            border-radius: 12px;
+            background: transparent;
+            color: #cbd5e1;
+            font-weight: 700;
+            transition: .25s;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            color: white;
+            box-shadow: 0 10px 28px rgba(59,130,246,.25);
+        }
+
+        .form-card {
+            background: rgba(255,255,255,.03);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 28px;
+        }
+
+        .form-title {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .form-subtitle {
+            color: var(--muted);
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #cbd5e1;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .input-group input,
+        .input-group select,
+        .chat-title-input,
+        .mode-select,
+        .chat-form textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            outline: none;
+            background: rgba(255,255,255,.04);
+            color: white;
+            font-size: 15px;
+            transition: .2s;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus,
+        .chat-title-input:focus,
+        .mode-select:focus,
+        .chat-form textarea:focus {
+            border-color: rgba(59,130,246,.5);
+            box-shadow: 0 0 0 4px rgba(59,130,246,.12);
+        }
+
+        .input-group input::placeholder,
+        .chat-form textarea::placeholder,
+        .chat-title-input::placeholder {
+            color: #64748b;
+        }
+
+        .btn {
+            width: 100%;
+            border: none;
+            cursor: pointer;
+            padding: 14px 18px;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 800;
+            transition: .25s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            color: white;
+            box-shadow: 0 10px 30px rgba(59,130,246,.25);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            opacity: .96;
+        }
+
+        .status-box {
+            margin-top: 16px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            font-size: 14px;
+            display: none;
+            word-break: break-word;
+        }
+
+        .status-success {
+            display: block;
+            background: rgba(16,185,129,.14);
+            color: #6ee7b7;
+            border: 1px solid rgba(16,185,129,.28);
+        }
+
+        .status-error {
+            display: block;
+            background: rgba(239,68,68,.14);
+            color: #fca5a5;
+            border: 1px solid rgba(239,68,68,.28);
+        }
+
+        /* CHAT APP */
+        .chat-app {
+            height: 100vh;
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            background: #020617;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            height: 100vh;
+            border-right: 1px solid rgba(255,255,255,.06);
+            background:
+                linear-gradient(180deg, rgba(15,23,42,.98), rgba(2,6,23,.98));
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .sidebar-top {
+            padding: 22px;
+            border-bottom: 1px solid rgba(255,255,255,.05);
+            flex-shrink: 0;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .sidebar-brand .brand-badge {
+            width: 44px;
+            height: 44px;
+            font-size: 17px;
+            border-radius: 14px;
+        }
+
+        .sidebar-brand h2 {
+            font-size: 20px;
+            margin-bottom: 2px;
+        }
+
+        .sidebar-brand p {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .sidebar-actions {
+            display: grid;
+            gap: 10px;
+        }
+
+        .secondary-btn {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid rgba(255,255,255,.08);
+            background: rgba(255,255,255,.03);
+            color: white;
+            cursor: pointer;
+            font-weight: 700;
+            border-radius: 14px;
+            transition: .2s;
+        }
+
+        .secondary-btn:hover {
+            background: rgba(255,255,255,.06);
+        }
+
+        .logout-btn {
+            background: rgba(239,68,68,.08);
+            border-color: rgba(239,68,68,.22);
+            color: #fecaca;
+        }
+
+        .logout-btn:hover {
+            background: rgba(239,68,68,.14);
+        }
+
+        .conversation-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            min-height: 0;
+        }
+
+        .conversation-list::-webkit-scrollbar,
+        .chat-messages::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .conversation-list::-webkit-scrollbar-thumb,
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,.10);
+            border-radius: 999px;
+        }
+
+        .conversation-item {
+            padding: 14px;
+            border-radius: 16px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            background: rgba(255,255,255,.025);
+            border: 1px solid transparent;
+            transition: .2s;
+        }
+
+        .conversation-item:hover {
+            background: rgba(255,255,255,.05);
+            transform: translateY(-1px);
+        }
+
+        .conversation-item.active {
+            border-color: rgba(59,130,246,.38);
+            background: linear-gradient(135deg, rgba(59,130,246,.14), rgba(139,92,246,.10));
+        }
+
+        .conversation-item h4 {
+            font-size: 14px;
+            margin-bottom: 6px;
+            color: #f8fafc;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .conversation-item p {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .sidebar-bottom {
+            padding: 16px;
+            border-top: 1px solid rgba(255,255,255,.05);
+            flex-shrink: 0;
+        }
+
+        .sidebar-bottom small {
+            color: var(--muted);
+            display: block;
+            text-align: center;
+        }
+
+        .chat-main {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at top, rgba(37,99,235,.08), transparent 28%),
+                #020617;
+        }
+
+        .chat-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid rgba(255,255,255,.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            background: rgba(2,6,23,.86);
+            backdrop-filter: blur(10px);
+            flex-shrink: 0;
+        }
+
+        .chat-header-left h3 {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+
+        .chat-header-left p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .chat-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .chat-title-input {
+            width: 240px;
+        }
+
+        .mode-select {
+            width: 150px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            min-height: 0;
+        }
+
+        .message-row {
+            display: flex;
+        }
+
+        .message-row.user {
+            justify-content: flex-end;
+        }
+
+        .message-row.bot {
+            justify-content: flex-start;
+        }
+
+        .message-bubble {
+            max-width: 75%;
+            padding: 16px 18px;
+            border-radius: 22px;
+            line-height: 1.65;
+            font-size: 15px;
+            white-space: pre-wrap;
+            word-break: break-word;
+            box-shadow: 0 10px 30px rgba(0,0,0,.18);
+        }
+
+        .message-row.user .message-bubble {
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            color: white;
+            border-bottom-right-radius: 8px;
+        }
+
+        .message-row.bot .message-bubble {
+            background: rgba(255,255,255,.05);
+            color: #e5e7eb;
+            border: 1px solid rgba(255,255,255,.06);
+            border-bottom-left-radius: 8px;
+        }
+
+        .message-bubble img {
+            margin-top: 12px;
+            width: 100%;
+            max-width: 380px;
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,.08);
+            display: block;
+        }
+
+        .welcome-box {
+            max-width: 860px;
+            margin: auto;
+            text-align: center;
+            padding: 42px 32px;
+            background: rgba(255,255,255,.03);
+            border: 1px solid rgba(255,255,255,.06);
+            border-radius: 28px;
+        }
+
+        .welcome-box h2 {
+            font-size: 40px;
+            margin-bottom: 14px;
+            background: linear-gradient(135deg, #ffffff, #bfdbfe, #d8b4fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .welcome-box p {
+            color: var(--muted);
+            line-height: 1.8;
+            max-width: 640px;
+            margin: 0 auto;
+        }
+
+        .chat-input-wrap {
+            padding: 20px 24px 24px;
+            border-top: 1px solid rgba(255,255,255,.06);
+            background: rgba(2,6,23,.9);
+            flex-shrink: 0;
+        }
+
+        .chat-form {
+            display: grid;
+            grid-template-columns: 1fr 140px;
+            gap: 14px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .chat-form textarea {
+            min-height: 68px;
+            max-height: 200px;
+            resize: vertical;
+            padding: 18px;
+            border-radius: 20px;
+        }
+
+        .send-btn {
+            border: none;
+            cursor: pointer;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            color: white;
+            font-weight: 800;
+            font-size: 15px;
+            box-shadow: 0 10px 30px rgba(59,130,246,.25);
+            transition: .2s;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-1px);
+            opacity: .96;
+        }
+
+        .top-alert {
+            position: fixed;
+            top: 18px;
+            right: 18px;
+            background: #111827;
+            color: white;
+            border: 1px solid rgba(255,255,255,.08);
+            padding: 14px 16px;
+            border-radius: 14px;
+            z-index: 9999;
+            min-width: 240px;
+            box-shadow: 0 16px 40px rgba(0,0,0,.3);
+        }
+
+        @media (max-width: 980px) {
+            html, body {
+                overflow: auto;
+            }
+
+            .auth-card {
+                grid-template-columns: 1fr;
+            }
+
+            .auth-left {
+                display: none;
+            }
+
+            .chat-app {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .message-bubble {
+                max-width: 88%;
+            }
+
+            .chat-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .chat-controls {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .chat-title-input,
+            .mode-select {
+                width: 100%;
+            }
+
+            .chat-form {
+                grid-template-columns: 1fr;
+            }
+
+            .send-btn {
+                min-height: 52px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- AUTH PAGE -->
+    <div id="authPage" class="page">
+        <div class="auth-card">
+            <div class="auth-left">
+                <div class="brand">
+                    <div class="brand-badge">CF</div>
+                    <div>
+                        <h3>ContextFlow AI</h3>
+                        <p>Professional intelligent chat platform</p>
+                    </div>
+                </div>
+
+                <h1>Smarter conversations for modern AI work.</h1>
+                <p>
+                    A sleek AI interface for authentication, conversation management, text chat, and image mode.
+                    Built to connect directly with your Django backend APIs.
+                </p>
+
+                <div class="feature-list">
+                    <div class="feature-item">Secure signup and signin connected to your API</div>
+                    <div class="feature-item">Beautiful conversation sidebar with isolated scrolling</div>
+                    <div class="feature-item">Supports text responses and image response mode</div>
+                </div>
+            </div>
+
+            <div class="auth-right">
+                <div class="auth-box">
+                    <div class="tabs">
+                        <button id="showSignin" class="tab-btn active">Sign In</button>
+                        <button id="showSignup" class="tab-btn">Sign Up</button>
+                    </div>
+
+                    <div class="form-card">
+                        <!-- SIGN IN -->
+                        <div id="signinFormBox">
+                            <h2 class="form-title">Welcome back</h2>
+                            <p class="form-subtitle">Sign in to continue to ContextFlow AI</p>
+
+                            <form id="signinForm">
+                                <div class="input-group">
+                                    <label>Username or Email</label>
+                                    <input type="text" id="signinIdentifier" placeholder="Enter username or email" required>
+                                </div>
+
+                                <div class="input-group">
+                                    <label>Password</label>
+                                    <input type="password" id="signinPassword" placeholder="Enter password" required>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">Sign In</button>
+                            </form>
+                        </div>
+
+                        <!-- SIGN UP -->
+                        <div id="signupFormBox" class="hidden">
+                            <h2 class="form-title">Create account</h2>
+                            <p class="form-subtitle">Start your AI chat experience</p>
+
+                            <form id="signupForm">
+                                <div class="input-group">
+                                    <label>Username</label>
+                                    <input type="text" id="signupUsername" placeholder="Choose username" required>
+                                </div>
+
+                                <div class="input-group">
+                                    <label>Email</label>
+                                    <input type="email" id="signupEmail" placeholder="Enter email" required>
+                                </div>
+
+                                <div class="input-group">
+                                    <label>Password</label>
+                                    <input type="password" id="signupPassword" placeholder="Create password" required>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">Create Account</button>
+                            </form>
+                        </div>
+
+                        <div id="authStatus" class="status-box"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHAT PAGE -->
+    <div id="chatPage" class="chat-app hidden">
+        <aside class="sidebar">
+            <div class="sidebar-top">
+                <div class="sidebar-brand">
+                    <div class="brand-badge">CF</div>
+                    <div>
+                        <h2>ContextFlow AI</h2>
+                        <p>Professional chatbot dashboard</p>
+                    </div>
+                </div>
+
+                <div class="sidebar-actions">
+                    <button id="newConversationBtn" class="secondary-btn">+ New Conversation</button>
+                </div>
+            </div>
+
+            <div id="conversationList" class="conversation-list"></div>
+
+            <div class="sidebar-bottom">
+                <button id="logoutBtn" class="secondary-btn logout-btn">Logout</button>
+                <small style="margin-top: 12px;">Powered by your Django API</small>
+            </div>
+        </aside>
+
+        <main class="chat-main">
+            <div class="chat-header">
+                <div class="chat-header-left">
+                    <h3 id="chatHeaderTitle">AI Assistant</h3>
+                    <p id="chatHeaderSubtitle">Start a conversation and chat with your assistant</p>
+                </div>
+
+                <div class="chat-controls">
+                    <input id="conversationTitleInput" class="chat-title-input" type="text" placeholder="Conversation title">
+                    <select id="chatMode" class="mode-select">
+                        <option value="text">Text Mode</option>
+                        <option value="image">Image Mode</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="chatMessages" class="chat-messages">
+                <div class="welcome-box">
+                    <h2>Welcome to ContextFlow AI</h2>
+                    <p>
+                        Create a conversation from the left panel, then send your message.
+                        Text mode returns chatbot replies and image mode returns generated image URLs.
+                    </p>
+                </div>
+            </div>
+
+            <div class="chat-input-wrap">
+                <form id="chatForm" class="chat-form">
+                    <textarea id="messageInput" placeholder="Type your message here..." required onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault(); document.getElementById('chatForm').dispatchEvent(new Event('submit'));}"></textarea>
+                    <button type="submit" class="send-btn">Send</button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script>
+
+        
+      async function deleteConversation(id) {
+    const response = await fetch(`/conversation/${id}/`, {
+        method: "DELETE",
+        headers: {
+            "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
+        }
+    });
+
+    if (response.ok) {
+        alert("Deleted");
+        loadConversations();
+    } else {
+        alert("Error deleting");
+    }
+}
+        const API = {
+            signup: "/signup/",
+            signin: "/signin/",
+            conversation: "/conversation/",
+            chat: "/chat/"
+        };
+
+        let accessToken = localStorage.getItem("accessToken") || "";
+        let refreshToken = localStorage.getItem("refreshToken") || "";
+        let currentConversationId = localStorage.getItem("currentConversationId") || null;
+
+        const authPage = document.getElementById("authPage");
+        const chatPage = document.getElementById("chatPage");
+        const authStatus = document.getElementById("authStatus");
+
+        const signinFormBox = document.getElementById("signinFormBox");
+        const signupFormBox = document.getElementById("signupFormBox");
+        const showSignin = document.getElementById("showSignin");
+        const showSignup = document.getElementById("showSignup");
+
+        const conversationList = document.getElementById("conversationList");
+        const chatMessages = document.getElementById("chatMessages");
+        const chatHeaderTitle = document.getElementById("chatHeaderTitle");
+        const chatHeaderSubtitle = document.getElementById("chatHeaderSubtitle");
+        const conversationTitleInput = document.getElementById("conversationTitleInput");
+        const chatMode = document.getElementById("chatMode");
+        const messageInput = document.getElementById("messageInput");
+
+        function showToast(message) {
+            const div = document.createElement("div");
+            div.className = "top-alert";
+            div.innerText = message;
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 2500);
+        }
+
+        function setAuthStatus(message, type = "success") {
+            authStatus.className = "status-box " + (type === "success" ? "status-success" : "status-error");
+            authStatus.textContent = message;
+        }
+
+        function clearAuthStatus() {
+            authStatus.className = "status-box";
+            authStatus.textContent = "";
+        }
+
+        function switchToSignin() {
+            signinFormBox.classList.remove("hidden");
+            signupFormBox.classList.add("hidden");
+            showSignin.classList.add("active");
+            showSignup.classList.remove("active");
+            clearAuthStatus();
+        }
+
+        function switchToSignup() {
+            signupFormBox.classList.remove("hidden");
+            signinFormBox.classList.add("hidden");
+            showSignup.classList.add("active");
+            showSignin.classList.remove("active");
+            clearAuthStatus();
+        }
+
+        showSignin.addEventListener("click", switchToSignin);
+        showSignup.addEventListener("click", switchToSignup);
+
+        function getAuthHeaders() {
+            return {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`
+            };
+        }
+
+        async function safeJson(response) {
+            try {
+                return await response.json();
+            } catch {
+                return null;
+            }
+        }
+
+        function saveTokens(data) {
+            const access = data?.access || data?.token || data?.access_token || "";
+            const refresh = data?.refresh || data?.refresh_token || "";
+
+            if (access) {
+                accessToken = access;
+                localStorage.setItem("accessToken", access);
+            }
+
+            if (refresh) {
+                refreshToken = refresh;
+                localStorage.setItem("refreshToken", refresh);
+            }
+        }
+
+        async function signupUser(username, email, password) {
+            const response = await fetch(API.signup, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, email, password })
+            });
+
+            const data = await safeJson(response);
+
+            if (!response.ok) {
+                throw new Error(
+    data?.error ||
+    data?.detail ||
+    data?.email?.[0] ||   
+    "Signup failed"
+);
+            }
+
+            return data;
+        }
+
+        async function signinUser(identifier, password) {
+    const payload = { password };
+
+    if (identifier.includes("@")) {
+        payload.email = identifier;
+    } else {
+        payload.username = identifier;
+    }
+
+    const response = await fetch(API.signin, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+    });
+
+    const data = await safeJson(response);
+
+    if (!response.ok) {
+        throw new Error(
+            data?.error ||
+            data?.detail ||
+            "Email or password is not correct"
+        );
+    }
+
+    saveTokens(data);
+
+    if (!accessToken) {
+        throw new Error(
+            data?.error ||
+            data?.detail ||
+            "Email or password is not correct"
+        );
+    }
+
+    return data;
+}
+
+        async function loadConversations() {
+            const response = await fetch(API.conversation, {
+                method: "GET",
+                headers: getAuthHeaders()
+            });
+
+            const data = await safeJson(response);
+
+            if (!response.ok) {
+                throw new Error("Failed to load conversations");
+            }
+
+            conversationList.innerHTML = "";
+
+            if (!Array.isArray(data) || data.length === 0) {
+                conversationList.innerHTML = `
+                    <div style="padding:14px;color:#94a3b8;font-size:14px;">
+                        No conversations yet. Create one to start chatting.
+                    </div>
+                `;
+                return;
+            }
+
+            data.forEach(item => {
+                const div = document.createElement("div");
+                div.className = "conversation-item" + (String(item.id) === String(currentConversationId) ? " active" : "");
+                div.innerHTML = `
+                    <h4>${item.title ? escapeHtml(item.title) : "Untitled Conversation"}</h4>
+                    <p>${item.updated_at ? new Date(item.updated_at).toLocaleString() : "Recently updated"}</p>
+                `;
+                div.addEventListener("click", () => {
+                    currentConversationId = item.id;
+                    localStorage.setItem("currentConversationId", item.id);
+                    chatHeaderTitle.textContent = item.title || "Untitled Conversation";
+                    chatHeaderSubtitle.textContent = `Conversation ID: ${item.id}`;
+                    conversationTitleInput.value = item.title || "";
+                    loadConversations();
+                    loadMessages(item.id);
+                });
+                conversationList.appendChild(div);
+            });
+        }
+
+        async function createConversation() {
+            let title = prompt("Enter conversation name:");
+            if (title === null) {
+                title = "";
+            }
+
+            title = title.trim() || "Untitled Conversation";
+            conversationTitleInput.value = title;
+
+            const response = await fetch(API.conversation, {
+                method: "POST",
+                headers: getAuthHeaders(),
+                body: JSON.stringify({ title })
+            });
+
+            const data = await safeJson(response);
+
+            if (!response.ok) {
+                throw new Error(data ? JSON.stringify(data) : "Failed to create conversation");
+            }
+
+            currentConversationId = data.id;
+            localStorage.setItem("currentConversationId", data.id);
+
+            chatHeaderTitle.textContent = data.title || title || "Untitled Conversation";
+            chatHeaderSubtitle.textContent = `Conversation ID: ${data.id}`;
+            chatMessages.innerHTML = `
+                <div class="welcome-box">
+                    <h2>Conversation ready</h2>
+                    <p>Type your message below and start chatting with the AI.</p>
+                </div>
+            `;
+
+            await loadConversations();
+            showToast("Conversation created");
+        }
+
+        async function loadMessages(conversationId) {
+            const response = await fetch(`/conversation/${conversationId}/message/`, {
+                method: "GET",
+                headers: getAuthHeaders()
+            });
+
+            const data = await safeJson(response);
+
+            if (!response.ok) {
+                throw new Error("Failed to load messages");
+            }
+
+            renderMessages(data || []);
+        }
+
+        function renderMessages(messages) {
+            chatMessages.innerHTML = "";
+
+            if (!messages.length) {
+                chatMessages.innerHTML = `
+                    <div class="welcome-box">
+                        <h2>Conversation ready</h2>
+                        <p>Type your message below and start chatting with the AI.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            messages.forEach(msg => {
+                appendMessage(msg.sender, msg.text, msg.image_url);
+            });
+
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function appendMessage(sender, text = "", imageUrl = "") {
+            const row = document.createElement("div");
+            row.className = `message-row ${sender}`;
+
+            const bubble = document.createElement("div");
+            bubble.className = "message-bubble";
+
+            let html = "";
+            if (text) {
+                html += `<div>${escapeHtml(text)}</div>`;
+            }
+            if (imageUrl) {
+                html += `<img src="${imageUrl}" alt="Generated image">`;
+                html += `<div style="margin-top:10px;font-size:13px;color:#93c5fd;">${escapeHtml(imageUrl)}</div>`;
+            }
+
+            bubble.innerHTML = html;
+            row.appendChild(bubble);
+            chatMessages.appendChild(row);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        async function sendMessage(message, mode) {
+            if (!currentConversationId) {
+                throw new Error("Please create or select a conversation first");
+            }
+
+            const response = await fetch(API.chat, {
+                method: "POST",
+                headers: getAuthHeaders(),
+                body: JSON.stringify({
+                    conversation_id: currentConversationId,
+                    message: message,
+                    mode: mode
+                })
+            });
+
+            const data = await safeJson(response);
+
+            if (!response.ok) {
+                throw new Error(data ? JSON.stringify(data) : "Failed to send message");
+            }
+
+            return data;
+        }
+
+        function escapeHtml(str) {
+            return String(str).replace(/[&<>"']/g, function (m) {
+                return ({
+                    "&": "&amp;",
+                    "<": "&lt;",
+                    ">": "&gt;",
+                    '"': "&quot;",
+                    "'": "&#39;"
+                })[m];
+            });
+        }
+
+        function showChatPage() {
+            authPage.classList.add("hidden");
+            chatPage.classList.remove("hidden");
+        }
+
+        function showAuthPage() {
+            chatPage.classList.add("hidden");
+            authPage.classList.remove("hidden");
+        }
+
+        async function initAfterLogin() {
+            showChatPage();
+            await loadConversations();
+
+            if (currentConversationId) {
+                try {
+                    await loadMessages(currentConversationId);
+                } catch {
+                    currentConversationId = null;
+                    localStorage.removeItem("currentConversationId");
+                }
+            }
+        }
+
+        document.getElementById("signupForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            clearAuthStatus();
+
+            const username = document.getElementById("signupUsername").value.trim();
+            const email = document.getElementById("signupEmail").value.trim();
+            const password = document.getElementById("signupPassword").value.trim();
+
+            try {
+                await signupUser(username, email, password);
+                switchToSignin();
+                document.getElementById("signinIdentifier").value = username;
+                setAuthStatus("Signup successful. Now sign in.", "success");
+            } catch (error) {
+                setAuthStatus(error.message, "error");
+            }
+        });
+
+        document.getElementById("signinForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            clearAuthStatus();
+
+            const identifier = document.getElementById("signinIdentifier").value.trim();
+            const password = document.getElementById("signinPassword").value.trim();
+
+            try {
+                await signinUser(identifier, password);
+                setAuthStatus("Signin successful", "success");
+                await initAfterLogin();
+            } catch (error) {
+                setAuthStatus(error.message, "error");
+            }
+        });
+
+        document.getElementById("newConversationBtn").addEventListener("click", async () => {
+            try {
+                await createConversation();
+            } catch (error) {
+                showToast(error.message);
+            }
+        });
+
+        document.getElementById("logoutBtn").addEventListener("click", () => {
+            accessToken = "";
+            refreshToken = "";
+            currentConversationId = null;
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+            localStorage.removeItem("currentConversationId");
+            showAuthPage();
+            showToast("Logged out");
+        });
+
+        document.getElementById("chatForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const message = messageInput.value.trim();
+            const mode = chatMode.value;
+
+            if (!message) return;
+
+            if (!currentConversationId) {
+                showToast("Create or select a conversation first");
+                return;
+            }
+
+            appendMessage("user", message, "");
+            messageInput.value = "";
+
+            try {
+                const data = await sendMessage(message, mode);
+
+                if (mode === "text") {
+                    appendMessage("bot", data.answer || "No response", "");
+                } else {
+                    appendMessage("bot", "Generated image response", data.image_url || "");
+                }
+
+                await loadConversations();
+            } catch (error) {
+                appendMessage("bot", "Error: " + error.message, "");
+            }
+        });
+
+        window.addEventListener("load", async () => {
+            if (accessToken) {
+                try {
+                    await initAfterLogin();
+                } catch (error) {
+                    localStorage.removeItem("accessToken");
+                    localStorage.removeItem("refreshToken");
+                    showAuthPage();
+                }
+            } else {
+                showAuthPage();
+            }
+        });
+    </script>
+</body>
+</html>

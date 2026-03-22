@@ -24,7 +24,7 @@ This project demonstrates backend API development, AI integration, and contextua
 - Django
 - Django REST Framework
 - Google Gemini API
-- Pollinations AI (free image generation)
+- Hugging Face (free image generation)
 - MySQL
 
 ---

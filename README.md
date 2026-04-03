@@ -124,7 +124,7 @@ POST
 ### Clone the repository
 
 ```
-git clone https://github.com/yourusername/contextflow.git
+git clone https://github.com/kartikchoudhary1177-lgtm
 cd contextflow
 ```
 
